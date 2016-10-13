@@ -412,7 +412,8 @@ namespace ts {
             getTypeCount: () => getDiagnosticsProducingTypeChecker().getTypeCount(),
             getFileProcessingDiagnostics: () => fileProcessingDiagnostics,
             getResolvedTypeReferenceDirectives: () => resolvedTypeReferenceDirectives,
-            dropDiagnosticsProducingTypeChecker
+            dropDiagnosticsProducingTypeChecker,
+            addFile: (fileName: string) => processRootFile(fileName, false)
         };
 
         verifyCompilerOptions();

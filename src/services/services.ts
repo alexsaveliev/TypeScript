@@ -1100,10 +1100,6 @@ namespace ts {
                 }
             }
 
-            // hostCache is captured in the closure for 'getOrCreateSourceFile' but it should not be used past this point.
-            // It needs to be cleared to allow all collected snapshots to be released
-            hostCache = undefined;
-
             program = newProgram;
 
             // Make sure all the nodes in the program are both bound, and have their parent
