@@ -19,11 +19,12 @@ namespace ts.NavigateTo {
 
             const nameToDeclarations = sourceFile.getNamedDeclarations();
             for (const name in nameToDeclarations) {
+
                 const declarations = nameToDeclarations[name];
                 if (declarations) {
                     // First do a quick check to see if the name of the declaration matches the
                     // last portion of the (possibly) dotted name they're searching for.
-                    let matches = patternMatcher.getMatchesForLastSegmentOfPattern(name);
+                    let matches = searchValue ? patternMatcher.getMatchesForLastSegmentOfPattern(name) : [{kind: PatternMatchKind.exact, isCaseSensitive: true, punctuationStripped: false}];
 
                     if (!matches) {
                         continue;
