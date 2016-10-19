@@ -9,6 +9,9 @@ namespace ts.NavigateTo {
         // This means "compare in a case insensitive manner."
         const baseSensitivity: Intl.CollatorOptions = { sensitivity: "base" };
 
+        // When no search query specified breaking when X items are fetched
+        let enough = false;
+
         // Search the declarations in all files and output matched NavigateToItem into array of NavigateToItem[]
         forEach(sourceFiles, sourceFile => {
             cancellationToken.throwIfCancellationRequested();
@@ -49,9 +52,17 @@ namespace ts.NavigateTo {
                         const fileName = sourceFile.fileName;
                         const matchKind = bestMatchKind(matches);
                         rawItems.push({ name, fileName, matchKind, isCaseSensitive: allMatchesAreCaseSensitive(matches), declaration });
+                        if (!searchValue && maxResultCount !== undefined && rawItems.length >= maxResultCount) {
+                            enough = true;
+                            break;
+                        }
                     }
                 }
+                if (enough) {
+                    break
+                }
             }
+            return enough;
         });
 
         // Remove imports when the imported declaration is already in the list and has the same name.
