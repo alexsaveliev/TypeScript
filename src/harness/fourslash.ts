@@ -2160,8 +2160,8 @@ namespace FourSlash {
             if a filename is passed in, limit the results to that file.
             Report an error if expected value and actual value do not match.
         */
-        public verifyNavigationItemsCount(expected: number, searchValue: string, matchKind?: string, fileName?: string) {
-            const items = this.languageService.getNavigateToItems(searchValue, /*maxResultCount*/ undefined, fileName);
+        public verifyNavigationItemsCount(expected: number, searchValue: string, matchKind?: string, fileName?: string, excludeDtsFiles?: boolean) {
+            const items = this.languageService.getNavigateToItems(searchValue, /*maxResultCount*/ undefined, fileName, excludeDtsFiles);
             let actual = 0;
             let item: ts.NavigateToItem;
 
@@ -3337,8 +3337,8 @@ namespace FourSlashInterface {
             this.state.verifyNavigationTree(json);
         }
 
-        public navigationItemsListCount(count: number, searchValue: string, matchKind?: string, fileName?: string) {
-            this.state.verifyNavigationItemsCount(count, searchValue, matchKind, fileName);
+        public navigationItemsListCount(count: number, searchValue: string, matchKind?: string, fileName?: string, excludeDtsFiles?: boolean) {
+            this.state.verifyNavigationItemsCount(count, searchValue, matchKind, fileName, excludeDtsFiles);
         }
 
         public navigationItemsListContains(

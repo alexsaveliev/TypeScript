@@ -6,6 +6,9 @@ namespace ts.NavigateTo {
         const patternMatcher = createPatternMatcher(searchValue);
         let rawItems: RawNavigateToItem[] = [];
 
+        // When no search query specified breaking when X items are fetched
+        let enough = false;
+
         // Search the declarations in all files and output matched NavigateToItem into array of NavigateToItem[]
         forEach(sourceFiles, sourceFile => {
             cancellationToken.throwIfCancellationRequested();
@@ -16,11 +19,12 @@ namespace ts.NavigateTo {
 
             const nameToDeclarations = sourceFile.getNamedDeclarations();
             for (const name in nameToDeclarations) {
+
                 const declarations = nameToDeclarations[name];
                 if (declarations) {
                     // First do a quick check to see if the name of the declaration matches the
                     // last portion of the (possibly) dotted name they're searching for.
-                    let matches = patternMatcher.getMatchesForLastSegmentOfPattern(name);
+                    let matches = searchValue ? patternMatcher.getMatchesForLastSegmentOfPattern(name) : [{ kind: PatternMatchKind.exact, isCaseSensitive: true, punctuationStripped: false }];
 
                     if (!matches) {
                         continue;
@@ -45,9 +49,17 @@ namespace ts.NavigateTo {
                         const fileName = sourceFile.fileName;
                         const matchKind = bestMatchKind(matches);
                         rawItems.push({ name, fileName, matchKind, isCaseSensitive: allMatchesAreCaseSensitive(matches), declaration });
+                        if (!searchValue && maxResultCount !== undefined && rawItems.length >= maxResultCount) {
+                            enough = true;
+                            break;
+                        }
                     }
                 }
+                if (enough) {
+                    break;
+                }
             }
+            return enough;
         });
 
         // Remove imports when the imported declaration is already in the list and has the same name.
