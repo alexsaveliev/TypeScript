@@ -2112,6 +2112,8 @@ namespace ts {
          */
         getTypeChecker(): TypeChecker;
 
+        addFile(fileName: string): void;
+
         /* @internal */ getCommonSourceDirectory(): string;
 
         // For testing purposes only.  Should not be used by any other consumers (including the
